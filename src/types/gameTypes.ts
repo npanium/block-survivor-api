@@ -49,6 +49,8 @@ export interface GameUpdateResponse {
   llm_used: boolean;
   error?: string;
   sessionId: string;
+  prompt?: string; // LLM prompt for debugging
+  llmResponse?: string; // Raw LLM response for debugging
 }
 
 export interface GameStartResponse {

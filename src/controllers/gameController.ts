@@ -189,6 +189,8 @@ export const updateGame = async (req: Request, res: Response) => {
       config: newConfig,
       success: llmSuccess,
       error: llmError,
+      prompt,
+      llmResponse,
     } = await llmService.generateGameConfig(currentConfig, validatedMetrics);
 
     // Update session with new config (even if it's the same as fallback)
@@ -202,6 +204,8 @@ export const updateGame = async (req: Request, res: Response) => {
       llm_used: llmSuccess,
       sessionId,
       ...(llmError && { error: llmError }),
+      ...(prompt && { prompt }),
+      ...(llmResponse && { llmResponse }),
     };
 
     // Log the update

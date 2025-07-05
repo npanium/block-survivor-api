@@ -5,7 +5,7 @@ import { brokerService, OFFICIAL_PROVIDERS } from "./brokerService";
 class LLMService {
   private readonly LLAMA_PROVIDER =
     OFFICIAL_PROVIDERS["llama-3.3-70b-instruct"];
-  private readonly LLM_TIMEOUT = 15000; // 15 seconds
+  private readonly LLM_TIMEOUT = 25000; // 25 seconds
 
   /**
    * Generate new game config based on player metrics
@@ -13,12 +13,26 @@ class LLMService {
   async generateGameConfig(
     currentConfig: GameConfig,
     metrics: PlayerMetrics
-  ): Promise<{ config: GameConfig; success: boolean; error?: string }> {
+  ): Promise<{
+    config: GameConfig;
+    success: boolean;
+    error?: string;
+    prompt?: string;
+    llmResponse?: string;
+  }> {
     try {
-      console.log(`Generating config for round ${metrics.round}`, metrics);
+      console.log(`\n🤖 Generating config for round ${metrics.round}`);
+      console.log(`📊 Player metrics:`, metrics);
 
       // Create structured prompt
       const prompt = this.createPrompt(currentConfig, metrics);
+
+      console.log(`\n📝 LLM PROMPT:`);
+      console.log(`${"─".repeat(60)}`);
+      console.log(prompt);
+      console.log(`${"─".repeat(60)}\n`);
+
+      console.log(`⏳ Calling LLM...`);
 
       // Call LLM with timeout
       const llmResponse = await Promise.race([
@@ -26,17 +40,24 @@ class LLMService {
         this.timeoutPromise(),
       ]);
 
+      console.log(`\n🤖 LLM RESPONSE:`);
+      console.log(`${"─".repeat(60)}`);
+      console.log(llmResponse);
+      console.log(`${"─".repeat(60)}\n`);
+
       // Parse and validate response
       const newConfig = this.parseLLMResponse(llmResponse, currentConfig);
 
-      console.log("LLM generated new config:", newConfig);
+      console.log("✅ LLM generated new config:", newConfig);
 
       return {
         config: newConfig,
         success: true,
+        prompt,
+        llmResponse,
       };
     } catch (error: any) {
-      console.error("LLM_ERROR", {
+      console.error("❌ LLM_ERROR", {
         metrics,
         currentConfig,
         error: error.message,
