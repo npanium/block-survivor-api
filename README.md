@@ -140,24 +140,24 @@ curl -X POST http://localhost:4000/api/game/SESSION_ID/update \
 ### Quick LLM Test
 
 ```bash
-node test-llm.js
+node ./src/test-llm.js
 ```
 
 ### Game Simulation
 
 ```bash
 # Test specific player skill level
-node simulate-game.js expert 5        # Expert player, 5 rounds
-node simulate-game.js beginner 3      # Beginner player, 3 rounds
+node ./src/simulate-game.js expert 5        # Expert player, 5 rounds
+node ./src/simulate-game.js beginner 3      # Beginner player, 3 rounds
 
 # Compare all player types
-node simulate-game.js comparison
+node ./src/simulate-game.js comparison
 ```
 
 ### Manual API Testing
 
 ```bash
-node test-api.js
+node ./src/test-api.js
 ```
 
 ## 🏗️ Architecture
