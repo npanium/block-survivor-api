@@ -4,6 +4,17 @@ const API_BASE = "http://localhost:4000/api";
 
 async function quickLLMTest() {
   console.log("🧪 Quick LLM Integration Test\n");
+  console.log("⏰ Expected response times: ~15 seconds per LLM call\n");
+
+  // Helper function to describe terrain effects
+  function getTerrainDescription(terrain) {
+    const descriptions = {
+      smooth: "fast movement, less control (player slips)",
+      sticky: "slow movement, hard to escape attacks",
+      rugged: "normal control, balanced terrain",
+    };
+    return descriptions[terrain] || "unknown";
+  }
 
   try {
     // 1. Start a game
@@ -90,7 +101,9 @@ async function quickLLMTest() {
         continue;
       }
 
-      console.log(`   ⚡ Response time: ${responseTime}ms`);
+      console.log(
+        `   ⚡ Response time: ${responseTime}ms (Expected: ~15 seconds for LLM calls)`
+      );
       console.log(
         `   🤖 LLM used: ${updateData.llm_used ? "✅ YES" : "❌ NO"}`
       );
@@ -103,7 +116,18 @@ async function quickLLMTest() {
       if (updateData.llm_used && updateData.prompt) {
         console.log(`\n   📝 LLM PROMPT SENT:`);
         console.log(`   ${"-".repeat(50)}`);
-        console.log(`   ${updateData.prompt.split("\n").join("\n   ")}`);
+        // Show key parts of the prompt
+        const promptLines = updateData.prompt.split("\n");
+        const keyLines = promptLines.filter(
+          (line) =>
+            line.includes("Actions Per Minute:") ||
+            line.includes("Dodge Success Rate:") ||
+            line.includes("Skill Level:") ||
+            line.includes("Current Game Configuration:") ||
+            line.includes("Terrain:") ||
+            line.includes("Boss Speed:")
+        );
+        console.log(`   ${keyLines.join("\n   ")}`);
         console.log(`   ${"-".repeat(50)}`);
       }
 
@@ -117,15 +141,18 @@ async function quickLLMTest() {
       const config = updateData.config;
       console.log(`\n   ⚙️  FINAL CONFIG APPLIED:`);
       console.log(
-        `      Terrain: ${config.terrain.type} (modifier: ${config.terrain.movementModifier})`
+        `      Terrain: ${config.terrain.type} (${getTerrainDescription(
+          config.terrain.type
+        )})`
       );
       console.log(`      Boss Speed: ${config.boss.speed}/100`);
       console.log(`      Boss Health: ${config.boss.health} HP`);
       console.log(`      Boss Damage: ${config.boss.damage}`);
       console.log(`      Boss Shield: ${config.boss.shield}`);
 
-      // Brief pause between tests
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      // Brief pause between tests (15 seconds to allow for LLM processing)
+      console.log(`   ⏳ Waiting 2 seconds before next test...`);
+      await new Promise((resolve) => setTimeout(resolve, 2000));
     }
 
     // 3. End game

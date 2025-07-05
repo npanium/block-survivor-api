@@ -1,7 +1,7 @@
 import { GameConfig, TerrainConfig, BossConfig } from "../types/gameTypes";
 
 export const DEFAULT_TERRAIN: TerrainConfig = {
-  type: "smooth",
+  type: "rugged", // Start with balanced terrain
   movementModifier: 1.0,
 };
 
@@ -17,19 +17,19 @@ export const DEFAULT_GAME_CONFIG: GameConfig = {
   boss: DEFAULT_BOSS,
 };
 
-// Terrain configurations
+// Terrain configurations with gameplay descriptions
 export const TERRAIN_CONFIGS: Record<string, TerrainConfig> = {
   smooth: {
     type: "smooth",
-    movementModifier: 1.2, // 20% faster movement
+    movementModifier: 1.2, // 20% faster movement but less control (player slips)
   },
   sticky: {
     type: "sticky",
-    movementModifier: 0.8, // 20% slower movement
+    movementModifier: 0.7, // 30% slower movement, hard to escape attacks
   },
   rugged: {
     type: "rugged",
-    movementModifier: 0.9, // 10% slower movement, more challenging
+    movementModifier: 1.0, // Normal player control, balanced terrain
   },
 };
 

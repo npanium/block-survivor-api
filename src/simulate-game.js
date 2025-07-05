@@ -177,7 +177,9 @@ class GameSimulator {
         throw new Error("Failed to update game: " + data.error);
       }
 
-      console.log(`⚡ API response time: ${responseTime}ms`);
+      console.log(
+        `⚡ API response time: ${responseTime}ms (Expected: ~15s for LLM)`
+      );
       console.log(
         `🤖 LLM used: ${data.llm_used ? "✅ Yes" : "❌ No (fallback)"}`
       );
@@ -188,28 +190,44 @@ class GameSimulator {
 
       // Show LLM interaction details if available
       if (data.llm_used && data.prompt) {
-        console.log(`\n📝 LLM PROMPT:`);
-        console.log(`${"-".repeat(60)}`);
-        // Truncate long prompts for readability
+        console.log(`\n📝 LLM PROMPT (key sections):`);
+        console.log(`${"-".repeat(40)}`);
+        // Show relevant prompt sections
         const promptLines = data.prompt.split("\n");
-        const truncatedPrompt =
-          promptLines.length > 15
-            ? promptLines.slice(0, 15).join("\n") + "\n... [truncated]"
-            : data.prompt;
-        console.log(truncatedPrompt);
-        console.log(`${"-".repeat(60)}`);
+        const keyLines = promptLines.filter(
+          (line) =>
+            line.includes("Actions Per Minute:") ||
+            line.includes("Dodge Success Rate:") ||
+            line.includes("Skill Level:") ||
+            line.includes("- Terrain:") ||
+            line.includes("TASK:")
+        );
+        console.log(keyLines.slice(0, 8).join("\n"));
+        console.log(`${"-".repeat(40)}`);
       }
 
       if (data.llm_used && data.llmResponse) {
         console.log(`\n🤖 LLM RESPONSE:`);
-        console.log(`${"-".repeat(60)}`);
+        console.log(`${"-".repeat(40)}`);
         console.log(data.llmResponse);
-        console.log(`${"-".repeat(60)}`);
+        console.log(`${"-".repeat(40)}`);
       }
+
+      // Helper function for terrain descriptions
+      const getTerrainDescription = (terrain) => {
+        const descriptions = {
+          smooth: "fast movement, less control (slips)",
+          sticky: "slow movement, hard to escape",
+          rugged: "normal control, balanced",
+        };
+        return descriptions[terrain] || "unknown";
+      };
 
       console.log(`\n⚙️  New config:`);
       console.log(
-        `   Terrain: ${data.config.terrain.type} (modifier: ${data.config.terrain.movementModifier})`
+        `   Terrain: ${data.config.terrain.type} (${getTerrainDescription(
+          data.config.terrain.type
+        )})`
       );
       console.log(`   Boss Speed: ${data.config.boss.speed}/100`);
       console.log(`   Boss Health: ${data.config.boss.health} HP`);

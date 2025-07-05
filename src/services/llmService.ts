@@ -5,7 +5,7 @@ import { brokerService, OFFICIAL_PROVIDERS } from "./brokerService";
 class LLMService {
   private readonly LLAMA_PROVIDER =
     OFFICIAL_PROVIDERS["llama-3.3-70b-instruct"];
-  private readonly LLM_TIMEOUT = 25000; // 25 seconds
+  private readonly LLM_TIMEOUT = 15000; // 15 seconds
 
   /**
    * Generate new game config based on player metrics
@@ -111,14 +111,29 @@ Current Game Configuration:
 - Boss Damage: ${boss.damage}
 - Boss Shield: ${boss.shield}
 
-TASK: Adjust difficulty to maintain engagement. If player is performing well, increase challenge. If struggling, reduce difficulty slightly.
+TERRAIN EFFECTS ON GAMEPLAY:
+- "smooth": Player moves faster but has less control (slips around), harder to precisely dodge
+- "sticky": Player movement is slowed, harder to escape from attacks, defensive disadvantage  
+- "rugged": Normal player control, balanced terrain, no movement penalties or bonuses
+
+BOSS DIFFICULTY SCALING:
+- boss_speed: 1-100 (higher = boss attacks faster, more pressure)
+- boss_health: 50-500 (higher = longer fights, more endurance needed)
+- boss_damage: 5-50 (higher = more punishing when hit)
+- boss_shield: 0-100 (higher = boss takes less damage, longer fights)
+
+TASK: Adjust difficulty to maintain engagement and challenge:
+- If player performing excellently (high APM + high dodge rate): Increase challenge with harder terrain and stronger boss
+- If player struggling (low APM + low dodge rate): Reduce difficulty with easier terrain and weaker boss  
+- If player improving: Gradually scale up difficulty
+- Consider terrain choice strategically: smooth for speed challenges, sticky for precision challenges, rugged for balanced
 
 CONSTRAINTS:
-- terrain: "smooth" | "sticky" | "rugged"
-- boss_speed: 1-100 (higher = faster)
-- boss_health: 50-500 
-- boss_damage: 5-50
-- boss_shield: 0-100
+- terrain: "smooth" | "sticky" | "rugged" 
+- boss_speed: 1-100 (current: ${boss.speed})
+- boss_health: 50-500 (current: ${boss.health})
+- boss_damage: 5-50 (current: ${boss.damage})
+- boss_shield: 0-100 (current: ${boss.shield})
 
 Return ONLY valid JSON in this exact format:
 {
