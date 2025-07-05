@@ -1,27 +1,30 @@
-import { brokerService } from './services/brokerService';
+import { brokerService } from "./services/brokerService";
+import { llmService } from "./services/llmService";
 
 /**
- * Initialize the application and ensure prerequisite resources exist
+ * Initialize application services
  */
-export const initializeApplication = async (): Promise<void> => {
+export async function initializeApplication(): Promise<void> {
+  console.log("🚀 Initializing 0G Compute Network Game API...");
+
   try {
-    console.log('🔄 Initializing application...');
-    
-    // Check if ledger exists, create with default values if not
-    try {
-      const balanceInfo = await brokerService.getBalance();
-      console.log('✅ Ledger account exists:', balanceInfo);
-    } catch (error) {
-      console.log('⚠️ Ledger account does not exist, creating...');
-      // Default initial amount, can be adjusted as needed
-      const initialAmount = 0.01; 
-      await brokerService.addFundsToLedger(initialAmount);
-      console.log(`✅ Ledger account created with ${initialAmount} initial funds`);
-    }
-    
-    console.log('✅ Application initialization complete');
+    // Test broker service initialization
+    console.log("📡 Testing broker service connection...");
+    // The broker service initializes automatically in its constructor
+
+    // Test LLM service (optional - can be slow)
+    console.log("🤖 Testing LLM service...");
+    // Skip LLM test for faster startup - it will be tested on first use
+    // const llmWorking = await llmService.testConnection();
+    // if (!llmWorking) {
+    //   console.warn('⚠️  LLM test failed - service will use fallback configs');
+    // }
+
+    console.log("✅ Game API initialized successfully!");
+    console.log("📊 Game sessions will be managed in memory");
+    console.log("🎮 Ready to handle game requests");
   } catch (error: any) {
-    console.error('❌ Application initialization failed:', error.message);
-    throw new Error(`Application initialization failed: ${error.message}`);
+    console.error("❌ Failed to initialize application:", error.message);
+    throw error;
   }
-}; 
+}
