@@ -154,16 +154,16 @@ pm2 logs block-survivor-fluence
 
 ```bash
 # Test the 0G Network LLM integration
-node ./src/test-llm.js
+node test-llm.js
 ```
 
 ### Game Simulation Tests
 
 ```bash
 # Test different player skill levels
-node ./src/simulate-game.js expert 3
-node ./src/simulate-game.js beginner 3
-node ./src/simulate-game.js comparison
+node simulate-game.js expert 3
+node simulate-game.js beginner 3
+node simulate-game.js comparison
 ```
 
 ### External Access Test
@@ -284,7 +284,43 @@ cp .env .env.backup
 pm2 save
 ```
 
-## 🌐 API Access from Unity
+## 🔐 HTTPS Setup for Web Deployment
+
+### Adding HTTPS with Cloudflare Tunnel
+
+If you need HTTPS for web deployment (e.g., Cloudflare Pages), use Cloudflare Tunnel:
+
+```bash
+# Install Cloudflare Tunnel
+curl -L --output cloudflared.deb https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64.deb
+sudo dpkg -i cloudflared.deb
+
+# Get instant HTTPS URL (no login required)
+cloudflared tunnel --url http://localhost:4000
+```
+
+**You'll get an HTTPS URL like:** `https://caring-lions-washington-example.trycloudflare.com`
+
+**Update your game/frontend to use this HTTPS endpoint:**
+
+```javascript
+// Replace HTTP with the Cloudflare tunnel URL
+const API_BASE = "https://your-tunnel-url.trycloudflare.com/api";
+```
+
+### Why HTTPS is Needed
+
+- **Cloudflare Pages/Vercel**: Require HTTPS for external API calls
+- **Modern Browsers**: Block HTTP requests from HTTPS sites
+- **Production Security**: HTTPS encrypts data in transit
+
+### Alternative HTTPS Options
+
+- **Custom Domain + Let's Encrypt**: Requires a domain name
+- **Self-signed Certificate**: Causes browser security warnings
+- **Cloudflare Tunnel**: ✅ Easiest, free, no domain required
+
+## 🌐 API Access from Unity/Web
 
 ### Fluence VM Endpoint Configuration
 
