@@ -64,7 +64,7 @@ node --version && npm --version
 
 ```bash
 # Clone the Block Survivor repository
-git clone https://github.com/your-username/block-survivor-api.git
+git clone https://github.com/npanium/block-survivor-api.git
 cd block-survivor-api
 
 # Install dependencies

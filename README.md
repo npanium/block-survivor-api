@@ -57,7 +57,7 @@ graph TD
 
 ```bash
 # Clone the repository
-git clone <your-repo-url>
+git clone https://github.com/npanium/block-survivor-api
 cd block-survivor-api
 
 # Install dependencies
