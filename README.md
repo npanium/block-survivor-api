@@ -162,6 +162,8 @@ node ./src/test-api.js
 
 ## 🏗️ Architecture
 
+<img src="./Architecture-diagram.png" maxWidth={100%}>
+
 ### Project Structure
 
 ```
